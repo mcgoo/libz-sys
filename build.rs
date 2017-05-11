@@ -1,4 +1,6 @@
 extern crate pkg_config;
+extern crate vcpkg;
+
 extern crate gcc;
 
 use std::env;
@@ -34,6 +36,17 @@ fn main() {
     // Practically all platforms come with libz installed already, but MSVC is
     // one of those sole platforms that doesn't!
     if target.contains("msvc") {
+        // see if there is a vcpkg tree with zlib installed
+        let mut vcpkg_config = vcpkg::Config::new();
+        vcpkg_config.emit_includes(true);
+        if want_static {
+            vcpkg_config.statik(true);
+        }
+        match vcpkg_config.lib_names("zlib", "zlib1").probe("zlib") {
+            Ok(_) => return,
+            Err(e) => println!("note, vcpkg did not find zlib: {}", e),
+        }
+
         build_msvc_zlib(&target);
     } else if target.contains("pc-windows-gnu") {
         build_zlib_mingw();
