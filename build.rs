@@ -47,6 +47,8 @@ fn main() {
             Err(e) => println!("note, vcpkg did not find zlib: {}", e),
         }
 
+        env::var_os("VCPKG_PANIC").map(|_| panic!());
+
         build_msvc_zlib(&target);
     } else if target.contains("pc-windows-gnu") {
         build_zlib_mingw();
