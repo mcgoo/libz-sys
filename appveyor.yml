@@ -11,21 +11,6 @@ environment:
     VCPKG_PANIC: 1
     VCPKG_ALL_STATIC: 1
     VCPKG_DEFAULT_TRIPLET: x64-windows-static
-  - TARGET: x86_64-pc-windows-msvc
-    VCPKG: 1
-    VCPKG_PANIC: 1
-    VCPKG_ALL_DYNAMIC: 1
-    VCPKG_DEFAULT_TRIPLET: x64-windows
-  - TARGET: i686-pc-windows-msvc
-    VCPKG: 1
-    VCPKG_PANIC: 1
-    VCPKG_ALL_STATIC: 1
-    VCPKG_DEFAULT_TRIPLET: x86-windows-static
-  - TARGET: i686-pc-windows-msvc
-    VCPKG: 1
-    VCPKG_PANIC: 1
-    VCPKG_ALL_DYNAMIC: 1
-    VCPKG_DEFAULT_TRIPLET: x86-windows
 install:
   - ps: Start-FileDownload "https://static.rust-lang.org/dist/rust-nightly-${env:TARGET}.exe"
   - rust-nightly-%TARGET%.exe /VERYSILENT /NORESTART /DIR="C:\Program Files (x86)\Rust"
