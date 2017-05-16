@@ -36,11 +36,9 @@ fn main() {
     // Practically all platforms come with libz installed already, but MSVC is
     // one of those sole platforms that doesn't!
     if target.contains("msvc") {
-        if try_vcpkg(want_static) {
+        if try_vcpkg() {
             return;
         }
-
-        env::var_os("VCPKG_PANIC").map(|_| panic!());
 
         build_msvc_zlib(&target);
     } else if target.contains("pc-windows-gnu") {
@@ -232,19 +230,17 @@ fn fail(s: &str) -> ! {
 }
 
 #[cfg(not(target_env = "msvc"))]
-fn try_vcpkg(_: bool) -> bool {
+fn try_vcpkg() -> bool {
     false
 }
 
 #[cfg(target_env = "msvc")]
-fn try_vcpkg(want_static: bool) -> bool {
+fn try_vcpkg() -> bool {
     // see if there is a vcpkg tree with zlib installed
-    let mut vcpkg_config = vcpkg::Config::new();
-    vcpkg_config.emit_includes(true);
-    if want_static {
-        vcpkg_config.statik(true);
-    }
-    match vcpkg_config.lib_names("zlib", "zlib1").probe("zlib") {
+    match vcpkg::Config::new()
+            .emit_includes(true)
+            .lib_names("zlib", "zlib1")
+            .probe("zlib") {
         Ok(_) => { true },
         Err(e) => {
             println!("note, vcpkg did not find zlib: {}", e);
